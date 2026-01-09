@@ -71,6 +71,17 @@ export default async ({ github, context }: API) => {
 
   const isFirstContribution = issues.every((issue) => issue.number === context.issue.number || !issue.pull_request);
 
+  const isDocsPR = await checkForDocsInPullRequestDiff({ github, context });
+  if (isDocsPR) {
+    await github.rest.issues.addLabels({
+      issue_number: context.issue.number,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      labels: ["site-documentation"],
+    });
+    console.log("Added documentation label");
+  }
+
   for (const extensionFolder of touchedExtensions) {
     const owners = codeowners[`/extensions/${extensionFolder}`];
 
@@ -130,7 +141,7 @@ export default async ({ github, context }: API) => {
       const packageJsonObj = JSON.parse(packageJson);
 
       aiFilesOrToolsExist = !!packageJsonObj.tools;
-      
+
       // Check platforms from existing package.json
       if (packageJsonObj.platforms && Array.isArray(packageJsonObj.platforms)) {
         platforms = packageJsonObj.platforms;
@@ -235,10 +246,10 @@ This is especially helpful since there were no maintainers for this extension :p
       comment: `Thank you for your ${isFirstContribution ? "first " : ""} contribution! :tada:
 
 🔔 ${[...new Set(owners.filter((x) => x !== sender))]
-        .map((x) => `@${x}`)
-        .join(
-          " "
-        )} you might want to have a look.
+          .map((x) => `@${x}`)
+          .join(
+            " "
+          )} you might want to have a look.
 
 You can use [this guide](https://developers.raycast.com/basics/review-pullrequest) to learn how to check out the Pull Request locally in order to test it.
 ${checkoutInstructions}
@@ -336,6 +347,26 @@ async function checkForAiInPullRequestDiff(
   }
 
   return aiFilesOrToolsExist;
+}
+
+async function checkForDocsInPullRequestDiff(
+  { github, context }: Pick<API, "github" | "context">
+): Promise<boolean> {
+  const { data: files } = await github.rest.pulls.listFiles({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    pull_number: context.issue.number,
+  });
+
+  for (const file of files) {
+    const filePath = file.filename;
+
+    if (/^docs\//.test(filePath)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 async function getPlatformsFromPullRequestDiff(
@@ -485,7 +516,7 @@ function getCheckoutInstructions(
   { context }: Pick<API, "context">
 ): string {
   const pullRequest = context.payload.pull_request;
-  
+
   // head.repo can be null if the fork was deleted
   const forkUrl = pullRequest.head.repo?.clone_url;
   const branch = pullRequest.head.ref;
