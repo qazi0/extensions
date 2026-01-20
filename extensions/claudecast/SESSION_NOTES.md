@@ -37,6 +37,81 @@ ClaudeCast eliminates this friction by providing instant access through Raycast'
 
 ---
 
+## Session 3 - January 20, 2025 (Prompt Library Upgrade & PR Fixes)
+
+### Accomplishments
+
+#### 1. Upgraded Prompt Library Icons
+Replaced all emoji icons with high-quality Raycast `Icon` constants with tint colors:
+- `Icon.Document` (Blue) - Spec-Driven Planning
+- `Icon.Building` (Purple) - Architecture Review
+- `Icon.CheckCircle` (Green) - TDD Kickoff, Test Coverage Audit
+- `Icon.Lock` (Red) - Security Review
+- `Icon.Bolt` (Yellow) - Performance Audit
+- `Icon.Eye` (Blue) - PR Review
+- `Icon.Hammer` (Orange) - Extract & Abstract
+- `Icon.Stars` (Magenta) - Simplify Complexity
+- `Icon.Shield` (Blue) - Type Strengthening
+- `Icon.MagnifyingGlass` (Red) - Error Diagnosis
+- `Icon.Bug` (Red) - Debug Strategy
+- `Icon.Book` (Blue) - Explain for Junior
+- `Icon.List` (Purple) - API Documentation
+- `Icon.Pencil` (Orange) - ADR Template
+- `Icon.Rocket` (Purple) - Feature Pipeline
+- `Icon.Map` (Green) - Codebase Onboarding
+
+#### 2. Enhanced All 17 Prompts
+Made prompts comprehensive with research-backed content:
+- Added detailed checklists and frameworks (OWASP Top 10, SOLID principles, etc.)
+- Included code examples and templates
+- Structured output formats for each prompt type
+- Based on best practices from industry sources
+
+#### 3. Fixed Project Path Bug
+**Problem:** When using prompts with Project Path variable, Claude Code opened in wrong directory.
+
+**Root Cause:** `handleSubmit` used `context.projectPath` from VS Code instead of user-specified path.
+
+**Fix:** Prioritize user-specified path:
+```typescript
+const targetPath = processedValues.projectPath || context.projectPath;
+```
+
+#### 4. Improved Variable Name Display
+Added helper to convert camelCase to Title Case:
+- `projectPath` → "Project Path"
+- `feature` → "Feature"
+
+#### 5. Addressed Greptile PR Review
+- Changed CHANGELOG.md date to `{PR_MERGE_DATE}` placeholder
+- Removed manual `Preferences` interfaces - use auto-generated types from `raycast-env.d.ts`
+- Added `raycast-env.d.ts` to tsconfig includes
+- Removed dead token counting code (`totalInputTokens`, `totalOutputTokens`, `formatTokens()`)
+
+#### 6. Updated Store Screenshots
+- Removed `claudecast-1.png` and `claudecast-2.png`
+- Added `claudecast-6.png` through `claudecast-9.png`
+
+### Key Technical Learnings
+
+1. **Raycast Icon system** - Use `Icon` constants with `tintColor` for high-quality icons
+2. **Auto-generated types** - `raycast-env.d.ts` provides `Preferences` type from `package.json`
+3. **tsconfig includes** - Must include `raycast-env.d.ts` for global types to work
+4. **Form variable handling** - User input should override context-captured values
+
+### Files Modified
+- `src/lib/prompts.ts` - Icon constants, enhanced prompts, interface updates
+- `src/prompt-library.tsx` - Icon rendering, variable name formatting, project path fix
+- `src/lib/usage-stats.ts` - Removed dead token code
+- `src/lib/claude-cli.ts` - Removed manual Preferences interface
+- `src/lib/terminal.ts` - Removed manual Preferences interface
+- `src/ask-claude.tsx` - Removed manual Preferences interface
+- `tsconfig.json` - Added raycast-env.d.ts to includes
+- `CHANGELOG.md` - Use {PR_MERGE_DATE} placeholder
+- `.gitignore` - Added SESSION_NOTES.md
+
+---
+
 ## Session 2 - January 20, 2025 (Store Submission & Bug Fixes)
 
 ### Accomplishments
