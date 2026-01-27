@@ -34,7 +34,7 @@
 - **Task Input Fields**: Ralph Loop task and requirements fields now use multiline TextArea for easier editing
 - **Loading States**: Added animated toast "Preparing Ralph Loop..." while script generates
 
-## [1.0.0] - {PR_MERGE_DATE}
+## [Initial Release] - 2026-01-23
 
 ### Added
 
@@ -43,7 +43,8 @@
 - **Session Browser**: Find and resume Claude Code conversations
 - **Quick Continue**: One-keystroke session continuation
 - **Git Actions**: Review staged changes, write commit messages
-- **Agentic Workflows**: 18 curated agentic workflow prompts with support for repository path input
+- **Prompt Library**: 17 curated agentic workflow prompts with support for repository path input
 - **Transform Selection**: Code transformations from any app
 - **Menu Bar Monitor**: Real-time Claude Code status and quick access
 - **Usage Dashboard**: Cost and usage metrics tracking
+
